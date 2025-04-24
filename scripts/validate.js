@@ -14,9 +14,9 @@ const hideInputError = (formElement, inputElement, settings) => {
 
 const checkInputValidity = (formElement, inputElement, settings) => {
   if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage, settings.inputErrorClass, settings.errorClass);
+    showInputError(formElement, inputElement, inputElement.validationMessage, settings);
   } else {
-    hideInputError(formElement, inputElement);
+    hideInputError(formElement, inputElement, settings);
   }
 };
 
@@ -39,4 +39,4 @@ const enableValidation = (settings) => {
   });
 };
 
-export default enableValidation;
+export { enableValidation };

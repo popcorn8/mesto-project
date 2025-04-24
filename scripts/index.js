@@ -1,5 +1,5 @@
-import enableValidation from './validate.js';
-import initialCards from './cards.js';
+import { enableValidation } from './validate.js';
+import { initialCards } from './cards.js';
 
 const content = document.querySelector('.content');
 
