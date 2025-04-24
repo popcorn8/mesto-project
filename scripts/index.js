@@ -1,3 +1,6 @@
+import enableValidation from './validate.js';
+import initialCards from './cards.js';
+
 const content = document.querySelector('.content');
 
 // Template
@@ -122,3 +125,15 @@ const imageCloseButton = imagePopup.querySelector('.popup__close');
 imageCloseButton.addEventListener('click', () => {
   closeModal(imagePopup);
 })
+
+// Валидация форм
+const validationSettings = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
+enableValidation(validationSettings);
