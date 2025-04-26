@@ -64,12 +64,22 @@ const profileJob = content.querySelector('.profile__description');
 profileNameInput.value = profileName.textContent;
 profileJobInput.value = profileJob.textContent;
 
+// Закрытие попапа клавишей Esc
+function closeByEsc(evt) {
+  if (evt.key === 'Escape') {
+    const openedPopup = document.querySelector('.popup_is-opened');
+    closeModal(openedPopup);
+  }
+};
+
 function openModal(popup) {
   popup.classList.add('popup_is-opened');
+  document.addEventListener('keydown', closeByEsc);
 }
 
 function closeModal(popup) {
   popup.classList.remove('popup_is-opened');
+  document.removeEventListener('keydown', closeByEsc);
 }
 
 const profileEditButton = content.querySelector('.profile__edit-button');
