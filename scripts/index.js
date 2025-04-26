@@ -61,6 +61,8 @@ initialCards.forEach((card) => {
 // Реадктирование профиля
 const profileName = content.querySelector('.profile__title');
 const profileJob = content.querySelector('.profile__description');
+profileNameInput.value = profileName.textContent;
+profileJobInput.value = profileJob.textContent;
 
 function openModal(popup) {
   popup.classList.add('popup_is-opened');
@@ -82,16 +84,12 @@ profileCloseButton.addEventListener('click', () => {
   closeModal(profilePopup);
 })
 
-const profileSaveButton = profilePopup.querySelector('.popup__button');
-profileSaveButton.addEventListener('click', () => {
-  closeModal(profilePopup);
-})
-
 function handleProfileFormSubmit(evt) {
     evt.preventDefault();
 
     profileName.textContent = profileNameInput.value;
     profileJob.textContent = profileJobInput.value;
+    closeModal(profilePopup);
 }
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
@@ -107,15 +105,11 @@ cardCloseButton.addEventListener('click', () => {
   closeModal(cardPopup);
 })
 
-const cardSaveButton = cardPopup.querySelector('.popup__button');
-cardSaveButton.addEventListener('click', () => {
-  closeModal(cardPopup);
-})
-
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
   placesList.prepend(createCard(cardNameInput.value, cardUrlInput.value));
+  closeModal(cardPopup);
 }
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
@@ -125,6 +119,20 @@ const imageCloseButton = imagePopup.querySelector('.popup__close');
 imageCloseButton.addEventListener('click', () => {
   closeModal(imagePopup);
 })
+
+// Закрытие попапа кликом на оверлей
+function closeWithClickOnOverlay() {
+  const popupList = document.querySelectorAll('.popup');
+  popupList.forEach((popup) => {
+    popup.addEventListener('click', (el) => {
+      if (el.target === popup) {
+        closeModal(popup);
+      }
+    });
+  });
+};
+
+closeWithClickOnOverlay();
 
 // Валидация форм
 const validationSettings = {
