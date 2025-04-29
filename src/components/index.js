@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { enableValidation } from './validate.js';
 import { createCard } from './cards.js';
 import { openModal, closeModal } from './modal.js';
-import { getUser, getInitialCards, editUser, addNewCard } from './api.js';
+import { getUser, getInitialCards, editUser, addNewCard, editAvatar } from './api.js';
 
 const content = document.querySelector('.content');
 
@@ -22,6 +22,9 @@ const imagePopup = document.querySelector('.popup_type_image');
 const imagePopupContent = imagePopup.querySelector('.popup__content');
 const contentImage = imagePopupContent.querySelector('.popup__image');
 const contentCaption = imagePopupContent.querySelector('.popup__caption');
+const avatarPopup = document.querySelector('.popup_type_avatar');
+const avatarUrlInput = avatarPopup.querySelector('.popup__input_type_url');
+const avatarFormElement = avatarPopup.querySelector('.popup__form');
 
 // Редактируемые элементы
 const profileName = content.querySelector('.profile__title');
@@ -88,7 +91,7 @@ function handleProfileFormSubmit(evt) {
     .then(user => {
       profileName.textContent = user.name;
       profileJob.textContent = user.about;
-      profileAvatar.src = user.avatar;
+      profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
     })
     .catch(err => {
       console.log(err);
@@ -98,6 +101,34 @@ function handleProfileFormSubmit(evt) {
 };
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
+
+// Редактирование аватара
+profileAvatar.addEventListener('click', () => {
+  openModal(avatarPopup);
+});
+
+const avatarCloseButton = avatarPopup.querySelector('.popup__close');
+avatarCloseButton.addEventListener('click', () => {
+  closeModal(avatarPopup);
+});
+
+function handleAvatarFormSubmit(evt) {
+  evt.preventDefault();
+
+  editAvatar(avatarUrlInput.value)
+    .then(user => {
+      profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+  evt.target.reset();
+
+  closeModal(avatarPopup);
+};
+
+avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
 
 // Добавление карточки
 const cardAddButton = content.querySelector('.profile__add-button');
