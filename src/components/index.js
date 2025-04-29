@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { enableValidation } from './validate.js';
 import { createCard } from './cards.js';
 import { openModal, closeModal } from './modal.js';
-import { getUser, getInitialCards, editUser } from './api.js';
+import { getUser, getInitialCards, editUser, addNewCard } from './api.js';
 
 const content = document.querySelector('.content');
 
@@ -30,11 +30,13 @@ const profileAvatar = content.querySelector('.profile__image');
 const placesList = document.querySelector('.places__list');
 
 // Загрузка пользователя
+let currentUserId;
 getUser()
   .then(user => {
     profileName.textContent = user.name;
     profileJob.textContent = user.about;
     profileAvatar.src = user.avatar;
+    currentUserId = user._id;
   })
   .catch(err => {
     console.log(err);
@@ -56,7 +58,7 @@ const handleCardClick = (name, link) => {
 getInitialCards()
   .then(initialCards => {
     initialCards.forEach((card) => {
-      placesList.append(createCard(card.name, card.link, cardTemplate, handleCardClick));
+      placesList.append(createCard(card, cardTemplate, handleCardClick, currentUserId));
     })
   })
   .catch(err => {
@@ -111,7 +113,16 @@ cardCloseButton.addEventListener('click', () => {
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
-  placesList.prepend(createCard(cardNameInput.value, cardUrlInput.value, cardTemplate, handleCardClick));
+  addNewCard(cardNameInput.value, cardUrlInput.value)
+    .then(newCard => {
+      placesList.prepend(createCard(newCard, cardTemplate, handleCardClick, currentUserId));
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+  evt.target.reset();
+
   closeModal(cardPopup);
 };
 
