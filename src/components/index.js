@@ -1,7 +1,8 @@
 import '../pages/index.css';
 import { enableValidation } from './validate.js';
-import { initialCards, createCard } from './cards.js';
+import { createCard } from './cards.js';
 import { openModal, closeModal } from './modal.js';
+import { getUser, getInitialCards } from './api.js';
 
 const content = document.querySelector('.content');
 
@@ -22,6 +23,19 @@ const imagePopupContent = imagePopup.querySelector('.popup__content');
 const contentImage = imagePopupContent.querySelector('.popup__image');
 const contentCaption = imagePopupContent.querySelector('.popup__caption');
 
+// Редактируемые элементы
+const profileName = content.querySelector('.profile__title');
+const profileJob = content.querySelector('.profile__description');
+const profileAvatar = content.querySelector('.profile__image');
+
+// Загрузка пользователя
+getUser()
+  .then(user => {
+    profileName.textContent = user.name;
+    profileJob.textContent = user.about;
+    profileAvatar.src = user.avatar;
+  })
+
 // Добавление анимаций
 profilePopup.classList.add('popup_is-animated');
 cardPopup.classList.add('popup_is-animated');
@@ -41,8 +55,6 @@ initialCards.forEach((card) => {
 })
 
 // Реадктирование профиля
-const profileName = content.querySelector('.profile__title');
-const profileJob = content.querySelector('.profile__description');
 profileNameInput.value = profileName.textContent;
 profileJobInput.value = profileJob.textContent;
 
