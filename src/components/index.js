@@ -35,7 +35,7 @@ getUser()
   .then(user => {
     profileName.textContent = user.name;
     profileJob.textContent = user.about;
-    profileAvatar.src = user.avatar;
+    profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
     currentUserId = user._id;
   })
   .catch(err => {
