@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { enableValidation } from './validate.js';
 import { createCard } from './cards.js';
 import { openModal, closeModal } from './modal.js';
-import { getUser, getInitialCards } from './api.js';
+import { getUser, getInitialCards, editUser } from './api.js';
 
 const content = document.querySelector('.content');
 
@@ -27,6 +27,7 @@ const contentCaption = imagePopupContent.querySelector('.popup__caption');
 const profileName = content.querySelector('.profile__title');
 const profileJob = content.querySelector('.profile__description');
 const profileAvatar = content.querySelector('.profile__image');
+const placesList = document.querySelector('.places__list');
 
 // Загрузка пользователя
 getUser()
@@ -35,6 +36,9 @@ getUser()
     profileJob.textContent = user.about;
     profileAvatar.src = user.avatar;
   })
+  .catch(err => {
+    console.log(err);
+  });
 
 // Добавление анимаций
 profilePopup.classList.add('popup_is-animated');
@@ -46,13 +50,18 @@ const handleCardClick = (name, link) => {
   contentImage.src = link;
   contentCaption.textContent = name;
   openModal(imagePopup);
-}
+};
 
-// Добавление заранее заготовленных карточек
-const placesList = document.querySelector('.places__list');
-initialCards.forEach((card) => {
-  placesList.append(createCard(card.name, card.link, cardTemplate, handleCardClick));
-})
+// Загрузка и добавление карточек
+getInitialCards()
+  .then(initialCards => {
+    initialCards.forEach((card) => {
+      placesList.append(createCard(card.name, card.link, cardTemplate, handleCardClick));
+    })
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 // Реадктирование профиля
 profileNameInput.value = profileName.textContent;
@@ -63,20 +72,28 @@ profileEditButton.addEventListener('click', () => {
   profileNameInput.value = profileName.textContent;
   profileJobInput.value = profileJob.textContent;
   openModal(profilePopup);
-})
+});
 
 const profileCloseButton = profilePopup.querySelector('.popup__close');
 profileCloseButton.addEventListener('click', () => {
   closeModal(profilePopup);
-})
+});
 
 function handleProfileFormSubmit(evt) {
-    evt.preventDefault();
+  evt.preventDefault();
 
-    profileName.textContent = profileNameInput.value;
-    profileJob.textContent = profileJobInput.value;
-    closeModal(profilePopup);
-}
+  editUser(profileNameInput.value, profileJobInput.value)
+    .then(user => {
+      profileName.textContent = user.name;
+      profileJob.textContent = user.about;
+      profileAvatar.src = user.avatar;
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+  closeModal(profilePopup);
+};
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
@@ -84,19 +101,19 @@ profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 const cardAddButton = content.querySelector('.profile__add-button');
 cardAddButton.addEventListener('click', () => {
   openModal(cardPopup);
-})
+});
 
 const cardCloseButton = cardPopup.querySelector('.popup__close');
 cardCloseButton.addEventListener('click', () => {
   closeModal(cardPopup);
-})
+});
 
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
   placesList.prepend(createCard(cardNameInput.value, cardUrlInput.value, cardTemplate, handleCardClick));
   closeModal(cardPopup);
-}
+};
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
 
@@ -104,7 +121,7 @@ cardFormElement.addEventListener('submit', handleCardFormSubmit);
 const imageCloseButton = imagePopup.querySelector('.popup__close');
 imageCloseButton.addEventListener('click', () => {
   closeModal(imagePopup);
-})
+});
 
 // Закрытие попапа кликом на оверлей
 function closeWithClickOnOverlay() {
@@ -128,6 +145,6 @@ const validationSettings = {
   inactiveButtonClass: 'popup__button_disabled',
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__error_visible'
-}
+};
 
 enableValidation(validationSettings);

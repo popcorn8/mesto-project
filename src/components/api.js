@@ -18,8 +18,25 @@ export const getUser = () => {
     });
 }
 
-export const getInitialCards = () => {
+export const editUser = (newName, newAbout) => {
   return fetch(`${config.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: newName,
+      about: newAbout
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
+}
+
+export const getInitialCards = () => {
+  return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
     .then(res => {
