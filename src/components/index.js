@@ -1,5 +1,7 @@
+import '../pages/index.css';
 import { enableValidation } from './validate.js';
-import { initialCards } from './cards.js';
+import { initialCards, createCard } from './cards.js';
+import { openModal, closeModal } from './modal.js';
 
 const content = document.querySelector('.content');
 
@@ -25,37 +27,17 @@ profilePopup.classList.add('popup_is-animated');
 cardPopup.classList.add('popup_is-animated');
 imagePopup.classList.add('popup_is-animated');
 
-// Создание новой карточки
-function createCard(name, link) {
-  const newCard = cardTemplate.querySelector('.card').cloneNode(true);
-  const cardImage = newCard.querySelector('.card__image');
-  cardImage.src = link;
-  cardImage.alt = name;
-  newCard.querySelector('.card__title').textContent = name;
-  // Лайк
-  const cardLikeButton = newCard.querySelector('.card__like-button');
-  cardLikeButton.addEventListener('click', () => {
-    cardLikeButton.classList.toggle('card__like-button_is-active');
-  });
-  // Удаление
-  const cardDeleteButton = newCard.querySelector('.card__delete-button');
-  cardDeleteButton.addEventListener('click', () => {
-    cardDeleteButton.closest('.card').remove();
-  });
-  // Просмотр
-  cardImage.addEventListener('click', () => {
-    contentImage.src = link;
-    contentCaption.textContent = name;
-    openModal(imagePopup);
-  })
-
-  return newCard;
+// Обработчик нажатия на карточку
+const handleCardClick = (name, link) => {
+  contentImage.src = link;
+  contentCaption.textContent = name;
+  openModal(imagePopup);
 }
 
 // Добавление заранее заготовленных карточек
 const placesList = document.querySelector('.places__list');
 initialCards.forEach((card) => {
-  placesList.append(createCard(card.name, card.link));
+  placesList.append(createCard(card.name, card.link, cardTemplate, handleCardClick));
 })
 
 // Реадктирование профиля
@@ -63,24 +45,6 @@ const profileName = content.querySelector('.profile__title');
 const profileJob = content.querySelector('.profile__description');
 profileNameInput.value = profileName.textContent;
 profileJobInput.value = profileJob.textContent;
-
-// Закрытие попапа клавишей Esc
-function closeByEsc(evt) {
-  if (evt.key === 'Escape') {
-    const openedPopup = document.querySelector('.popup_is-opened');
-    closeModal(openedPopup);
-  }
-};
-
-function openModal(popup) {
-  popup.classList.add('popup_is-opened');
-  document.addEventListener('keydown', closeByEsc);
-}
-
-function closeModal(popup) {
-  popup.classList.remove('popup_is-opened');
-  document.removeEventListener('keydown', closeByEsc);
-}
 
 const profileEditButton = content.querySelector('.profile__edit-button');
 profileEditButton.addEventListener('click', () => {
@@ -118,7 +82,7 @@ cardCloseButton.addEventListener('click', () => {
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
-  placesList.prepend(createCard(cardNameInput.value, cardUrlInput.value));
+  placesList.prepend(createCard(cardNameInput.value, cardUrlInput.value, cardTemplate, handleCardClick));
   closeModal(cardPopup);
 }
 
