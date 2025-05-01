@@ -50,6 +50,15 @@ profilePopup.classList.add('popup_is-animated');
 cardPopup.classList.add('popup_is-animated');
 imagePopup.classList.add('popup_is-animated');
 
+// UX для попапов
+function renderLoading(isLoading, button) {
+  if (isLoading) {
+    button.textContent = 'Сохранение...';
+  } else {
+    button.textContent = 'Сохранить';
+  }
+}
+
 // Обработчик нажатия на карточку
 const handleCardClick = (name, link) => {
   contentImage.src = link;
@@ -84,8 +93,12 @@ profileCloseButton.addEventListener('click', () => {
   closeModal(profilePopup);
 });
 
+const profileSaveButton = profilePopup.querySelector('.popup__button');
+
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
+
+  renderLoading(true, profileSaveButton);
 
   editUser(profileNameInput.value, profileJobInput.value)
     .then(user => {
@@ -95,6 +108,9 @@ function handleProfileFormSubmit(evt) {
     })
     .catch(err => {
       console.log(err);
+    })
+    .finally(res => {
+      renderLoading(false, profileSaveButton);
     });
 
   closeModal(profilePopup);
@@ -112,8 +128,12 @@ avatarCloseButton.addEventListener('click', () => {
   closeModal(avatarPopup);
 });
 
+const avatarSaveButton = avatarPopup.querySelector('.popup__button');
+
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
+
+  renderLoading(true, avatarSaveButton);
 
   editAvatar(avatarUrlInput.value)
     .then(user => {
@@ -121,6 +141,9 @@ function handleAvatarFormSubmit(evt) {
     })
     .catch(err => {
       console.log(err);
+    })
+    .finally(res => {
+      renderLoading(false, avatarSaveButton);
     });
 
   evt.target.reset();
@@ -141,8 +164,12 @@ cardCloseButton.addEventListener('click', () => {
   closeModal(cardPopup);
 });
 
+const cardSaveButton = cardPopup.querySelector('.popup__button');
+
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
+
+  renderLoading(true, cardSaveButton);
 
   addNewCard(cardNameInput.value, cardUrlInput.value)
     .then(newCard => {
@@ -150,6 +177,9 @@ function handleCardFormSubmit(evt) {
     })
     .catch(err => {
       console.log(err);
+    })
+    .finally(res => {
+      renderLoading(false, cardSaveButton);
     });
 
   evt.target.reset();
