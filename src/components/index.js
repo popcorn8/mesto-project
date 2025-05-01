@@ -105,6 +105,7 @@ function handleProfileFormSubmit(evt) {
       profileName.textContent = user.name;
       profileJob.textContent = user.about;
       profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
+      closeModal(profilePopup);
     })
     .catch(err => {
       console.log(err);
@@ -112,8 +113,6 @@ function handleProfileFormSubmit(evt) {
     .finally(res => {
       renderLoading(false, profileSaveButton);
     });
-
-  closeModal(profilePopup);
 };
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
@@ -138,6 +137,7 @@ function handleAvatarFormSubmit(evt) {
   editAvatar(avatarUrlInput.value)
     .then(user => {
       profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
+      closeModal(avatarPopup);
     })
     .catch(err => {
       console.log(err);
@@ -147,8 +147,6 @@ function handleAvatarFormSubmit(evt) {
     });
 
   evt.target.reset();
-
-  closeModal(avatarPopup);
 };
 
 avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
@@ -174,6 +172,7 @@ function handleCardFormSubmit(evt) {
   addNewCard(cardNameInput.value, cardUrlInput.value)
     .then(newCard => {
       placesList.prepend(createCard(newCard, cardTemplate, handleCardClick, currentUserId));
+      closeModal(cardPopup);
     })
     .catch(err => {
       console.log(err);
@@ -183,8 +182,6 @@ function handleCardFormSubmit(evt) {
     });
 
   evt.target.reset();
-
-  closeModal(cardPopup);
 };
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
