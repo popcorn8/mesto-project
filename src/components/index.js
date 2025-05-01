@@ -32,14 +32,20 @@ const profileJob = content.querySelector('.profile__description');
 const profileAvatar = content.querySelector('.profile__image');
 const placesList = document.querySelector('.places__list');
 
-// Загрузка пользователя
+// Загрузка пользователя и отображение карточек
 let currentUserId;
-getUser()
-  .then(user => {
+Promise.all([getUser(), getInitialCards()])
+  .then(([user, initialCards]) => {
+    // Установка данных пользователя
     profileName.textContent = user.name;
     profileJob.textContent = user.about;
     profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
     currentUserId = user._id;
+
+    // Отображение карточек
+    initialCards.forEach((card) => {
+      placesList.append(createCard(card, cardTemplate, handleCardClick, currentUserId));
+    });
   })
   .catch(err => {
     console.log(err);
@@ -65,17 +71,6 @@ const handleCardClick = (name, link) => {
   contentCaption.textContent = name;
   openModal(imagePopup);
 };
-
-// Загрузка и добавление карточек
-getInitialCards()
-  .then(initialCards => {
-    initialCards.forEach((card) => {
-      placesList.append(createCard(card, cardTemplate, handleCardClick, currentUserId));
-    })
-  })
-  .catch(err => {
-    console.log(err);
-  });
 
 // Реадктирование профиля
 profileNameInput.value = profileName.textContent;
