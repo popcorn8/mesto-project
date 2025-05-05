@@ -60,8 +60,10 @@ imagePopup.classList.add('popup_is-animated');
 function renderLoading(isLoading, button) {
   if (isLoading) {
     button.textContent = 'Сохранение...';
+    button.disabled = true;
   } else {
     button.textContent = 'Сохранить';
+    button.disabled = false;
   }
 }
 
@@ -114,6 +116,7 @@ profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
 // Редактирование аватара
 profileAvatar.addEventListener('click', () => {
+  avatarUrlInput.value = '';
   openModal(avatarPopup);
 });
 
@@ -133,6 +136,7 @@ function handleAvatarFormSubmit(evt) {
     .then(user => {
       profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
       closeModal(avatarPopup);
+      evt.target.reset();
     })
     .catch(err => {
       console.log(err);
@@ -141,7 +145,6 @@ function handleAvatarFormSubmit(evt) {
       renderLoading(false, avatarSaveButton);
     });
 
-  evt.target.reset();
 };
 
 avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
@@ -149,6 +152,8 @@ avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
 // Добавление карточки
 const cardAddButton = content.querySelector('.profile__add-button');
 cardAddButton.addEventListener('click', () => {
+  cardNameInput.value = '';
+  cardUrlInput.value = '';
   openModal(cardPopup);
 });
 
@@ -168,6 +173,7 @@ function handleCardFormSubmit(evt) {
     .then(newCard => {
       placesList.prepend(createCard(newCard, cardTemplate, handleCardClick, currentUserId));
       closeModal(cardPopup);
+      evt.target.reset();
     })
     .catch(err => {
       console.log(err);
@@ -176,7 +182,6 @@ function handleCardFormSubmit(evt) {
       renderLoading(false, cardSaveButton);
     });
 
-  evt.target.reset();
 };
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
