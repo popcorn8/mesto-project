@@ -32,6 +32,9 @@ const profileJob = content.querySelector('.profile__description');
 const profileAvatar = content.querySelector('.profile__image');
 const placesList = document.querySelector('.places__list');
 
+// Флаг для блокировки повторной отправки формы
+let isSubmitting = false;
+
 // Загрузка пользователя и отображение карточек
 let currentUserId;
 Promise.all([getUser(), getInitialCards()])
@@ -95,21 +98,26 @@ const profileSaveButton = profilePopup.querySelector('.popup__button');
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  renderLoading(true, profileSaveButton);
+  if (!isSubmitting) {
+    isSubmitting = true;
 
-  editUser(profileNameInput.value, profileJobInput.value)
-    .then(user => {
-      profileName.textContent = user.name;
-      profileJob.textContent = user.about;
-      profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
-      closeModal(profilePopup);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .finally(res => {
-      renderLoading(false, profileSaveButton);
-    });
+    renderLoading(true, profileSaveButton);
+
+    editUser(profileNameInput.value, profileJobInput.value)
+      .then(user => {
+        profileName.textContent = user.name;
+        profileJob.textContent = user.about;
+        profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
+        closeModal(profilePopup);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(res => {
+        renderLoading(false, profileSaveButton);
+        isSubmitting = false;
+      });
+  }
 };
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
@@ -130,21 +138,25 @@ const avatarSaveButton = avatarPopup.querySelector('.popup__button');
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
 
-  renderLoading(true, avatarSaveButton);
+  if (!isSubmitting) {
+    isSubmitting = true;
 
-  editAvatar(avatarUrlInput.value)
-    .then(user => {
-      profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
-      closeModal(avatarPopup);
-      evt.target.reset();
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .finally(res => {
-      renderLoading(false, avatarSaveButton);
-    });
+    renderLoading(true, avatarSaveButton);
 
+    editAvatar(avatarUrlInput.value)
+      .then(user => {
+        profileAvatar.style.backgroundImage = `url('${user.avatar}')`;
+        closeModal(avatarPopup);
+        evt.target.reset();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(res => {
+        renderLoading(false, avatarSaveButton);
+        isSubmitting = false;
+      });
+  }
 };
 
 avatarFormElement.addEventListener('submit', handleAvatarFormSubmit);
@@ -167,21 +179,25 @@ const cardSaveButton = cardPopup.querySelector('.popup__button');
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
 
-  renderLoading(true, cardSaveButton);
+  if (!isSubmitting) {
+    isSubmitting = true;
 
-  addNewCard(cardNameInput.value, cardUrlInput.value)
-    .then(newCard => {
-      placesList.prepend(createCard(newCard, cardTemplate, handleCardClick, currentUserId));
-      closeModal(cardPopup);
-      evt.target.reset();
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .finally(res => {
-      renderLoading(false, cardSaveButton);
-    });
+    renderLoading(true, cardSaveButton);
 
+    addNewCard(cardNameInput.value, cardUrlInput.value)
+      .then(newCard => {
+        placesList.prepend(createCard(newCard, cardTemplate, handleCardClick, currentUserId));
+        closeModal(cardPopup);
+        evt.target.reset();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .finally(res => {
+        renderLoading(false, cardSaveButton);
+        isSubmitting = false;
+      });
+  }
 };
 
 cardFormElement.addEventListener('submit', handleCardFormSubmit);
